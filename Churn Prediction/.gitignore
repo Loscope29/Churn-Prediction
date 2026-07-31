@@ -194,3 +194,4 @@ cython_debug/
 mlartifacts/
 mlflow.db
 .vscode
+mlruns/
