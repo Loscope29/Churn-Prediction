@@ -111,6 +111,22 @@ docker compose up --build
 
 ---
 
+## CI/CD GitHub Actions
+
+Le workflow `.github/workflows/ci-cd.yml` exécute les tests et les contrôles Ruff sur chaque pull request et chaque push. Après un push sur `main` ou `master`, il construit puis publie les deux images Docker sur Docker Hub :
+
+- `loscope29/churnprediction-api`
+- `loscope29/churnprediction-streamlit`
+
+Dans les secrets du dépôt GitHub (`Settings > Secrets and variables > Actions`), ajouter :
+
+- `DOCKERHUB_USERNAME` : nom d'utilisateur Docker Hub.
+- `DOCKERHUB_TOKEN` : access token Docker Hub avec les droits de lecture et d'écriture sur les dépôts.
+
+Les images sont publiées avec le tag `latest` et un tag correspondant au SHA du commit.
+
+---
+
 ## 🧪 Exécution des Tests Automatisés
 
 Lancer la suite de tests avec `pytest` :
