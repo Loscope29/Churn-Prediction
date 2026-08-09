@@ -1,0 +1,58 @@
+name: Churn Prediction CML
+
+on:
+  pull_request:
+    branches:
+      - main
+      - master
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write
+  pull-requests: write
+
+jobs:
+  train:
+    name: Train model and publish CML report
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+          cache-dependency-path: requirements.txt
+
+      - name: Set up CML
+        uses: iterative/setup-cml@v1
+
+      - name: Install dependencies
+        run: python -m pip install -r requirements.txt
+
+      - name: Train model and capture metrics
+        shell: bash
+        run: |
+          set -o pipefail
+          python "Churn Prediction/modeling/train_pipeline.py" 2>&1 | tee results.txt
+
+      - name: Write CML report
+        if: always() && github.event_name == 'pull_request'
+        env:
+          REPO_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          {
+            echo "# Churn model training report"
+            echo
+            echo "Commit: \`${GITHUB_SHA}\`"
+            echo
+            echo "## Training output"
+            echo
+            echo '```text'
+            cat results.txt 2>/dev/null || echo "Training did not produce output."
+            echo '```'
+          } > report.md
+          cml comment create report.md

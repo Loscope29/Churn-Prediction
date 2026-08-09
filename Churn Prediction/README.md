@@ -113,7 +113,7 @@ docker compose up --build
 
 ## CI/CD GitHub Actions
 
-Le workflow `.github/workflows/ci-cd.yml` exécute les tests et les contrôles Ruff sur chaque pull request et chaque push. Après un push sur `main` ou `master`, il construit puis publie les deux images Docker sur Docker Hub :
+Les workflows `.github/workflows/ci.yaml`, `.github/workflows/cd.yaml` et `.github/workflows/cml.yaml` séparent respectivement la validation du code, la publication Docker et l'entraînement ML. La CI exécute les tests et les contrôles Ruff sur chaque pull request et chaque push. Après un push sur `main` ou `master`, la CD construit puis publie les deux images Docker sur Docker Hub :
 
 - `loscope29/churnprediction-api`
 - `loscope29/churnprediction-streamlit`
@@ -124,6 +124,14 @@ Dans les secrets du dépôt GitHub (`Settings > Secrets and variables > Actions`
 - `DOCKERHUB_TOKEN` : access token Docker Hub avec les droits de lecture et d'écriture sur les dépôts.
 
 Les images sont publiées avec le tag `latest` et un tag correspondant au SHA du commit.
+
+---
+
+## CML et suivi des modèles
+
+Le job `cml` du workflow entraîne le pipeline avec `Churn Prediction/modeling/train_pipeline.py` et publie la sortie d'entraînement comme commentaire dans les pull requests. Le dataset utilisé par cet entraînement doit être disponible dans `data/processed/Bank_Churn_clean.csv` dans l'environnement CI.
+
+Le répertoire `data/` étant ignoré par Git, configurez DVC ou un stockage externe avant d'utiliser le job CML si ce fichier n'est pas versionné. Dans ce cas, ajoutez une étape de téléchargement ou de `dvc pull` avant l'étape d'entraînement.
 
 ---
 
