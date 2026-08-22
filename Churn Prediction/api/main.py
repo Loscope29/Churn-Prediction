@@ -71,6 +71,9 @@ app.add_middleware(
 
 
 def format_single_prediction(data_dict: dict) -> PredictionResponse:
+    """"
+    Format the prediction result for a single customer based on the model artifact.
+    """
     if artifact is None or "pipeline" not in artifact:
         raise HTTPException(
             status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
