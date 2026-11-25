@@ -1,37 +1,36 @@
-# 🏦 Bank Churn Prediction - Service MLOps & IA de Rétention Client
+# Prédiction du churn bancaire — service MLOps de rétention client
 
 [![Python](https://img.shields.io/badge/Python-3.11-blue.svg)](https://www.python.org/)
 [![FastAPI](https://img.shields.io/badge/FastAPI-0.100+-green.svg)](https://fastapi.tiangolo.com/)
 [![Streamlit](https://img.shields.io/badge/Streamlit-1.25+-red.svg)](https://streamlit.io/)
 [![Docker](https://img.shields.io/badge/Docker-Enabled-blue.svg)](https://www.docker.com/)
-[![Pytest](https://img.shields.io/badge/Pytest-Passed-success.svg)](https://docs.pytest.org/)
+[![Pytest](https://img.shields.io/badge/Tests-Pytest-blue.svg)](https://docs.pytest.org/)
 
-Projet MLOps complet de prédiction de l'attrition bancaire (*Churn Client*) et de recommandation automatique d'actions de rétention. Le système s'appuie sur un modèle de Machine Learning optimisé par Optuna, une API REST FastAPI sécurisée avec validation Pydantic, une interface graphique interactive Streamlit, une suite de tests Pytest, ainsi qu'une conteneurisation Docker multi-services.
-
----
-
-## 📄 Rapport Décisionnel & Synthèse Métier
-
-Pour consulter l'analyse détaillée destinée à la Direction Générale et à la Direction Marketing (insights SHAP, ROI financier, matrice de coûts et plan d'action) :
-👉 **[Lire le Rapport Décisionnel (rapport_decisionnel_churn.md)](docs/rapport_decisionnel_churn.md)**
+Prédiction de l'attrition des clients d'une banque (*churn*) et recommandation d'actions de rétention. Le projet comprend un modèle de machine learning optimisé avec Optuna, une API REST FastAPI avec validation Pydantic, une interface Streamlit, une suite de tests Pytest et une conteneurisation Docker multi-services.
 
 ---
 
-## 📊 Performances du Modèle IA
+## Rapport décisionnel
+
+L'analyse destinée à la direction générale et à la direction marketing (facteurs explicatifs SHAP, retour sur investissement, matrice de coûts et plan d'action) est disponible dans [docs/rapport_decisionnel_churn.md](docs/rapport_decisionnel_churn.md).
+
+---
+
+## Performances du modèle
 
 - **Algorithme :** Random Forest / XGBoost avec `ColumnTransformer` scikit-learn (`OneHotEncoder` + `StandardScaler`).
-- **Score ROC-AUC :** `0.8602`
-- **Taux de Détection (Recall) :** `82.31%`
-- **Seuil Décisionnel Optimisé :** `0.371` (défini par minimisation de la matrice des coûts métier : $C_{FP}=50€, C_{FN}=360€$).
-- **Impact Financier Net Préservé :** `+82 900,00 €` sur le jeu d'évaluation.
+- **ROC-AUC :** `0.8602`
+- **Rappel (recall) :** `82.31%`
+- **Seuil de décision :** `0.371` (défini par minimisation de la matrice des coûts métier : $C_{FP}=50€, C_{FN}=360€$).
+- **Impact financier net :** `+82 900,00 €` sur le jeu d'évaluation.
 
 ---
 
-## 🏗️ Architecture du Projet
+## Architecture du projet
 
 ```
 Churn Prediction/
-├── api/                        <- Application microservice FastAPI & Schémas Pydantic
+├── api/                        <- API FastAPI et schémas Pydantic
 │   ├── main.py                 <- Endpoints REST (/health, /predict, /predict_batch)
 │   └── schemas.py              <- Modèles de validation Pydantic v2
 ├── Churn Prediction/           <- Module Python & scripts MLOps
@@ -45,11 +44,11 @@ Churn Prediction/
 │   └── rapport_decisionnel_churn.md <- Rapport stratégique pour les décideurs
 ├── models/                     <- Artefacts ML sérialisés (.pkl)
 │   └── best_churn_pipeline.pkl
-├── notebooks/                  <- Carnets Jupyter d'EDA, Prétraitement et Optimisation Optuna
+├── notebooks/                  <- Notebooks : exploration, prétraitement, optimisation Optuna
 ├── reports/                    <- Figures d'explicabilité SHAP et présentations
 │   └── figures/
 ├── streamlit_app/              <- Interface utilisateur web interactive
-│   └── app.py                  <- Dashboard Streamlit (Formulaire & Import CSV par lot)
+│   └── app.py                  <- Tableau de bord Streamlit (formulaire et import CSV par lot)
 ├── tests/                      <- Suite de tests unitaires et d'intégration Pytest
 │   ├── test_api.py             <- Tests des endpoints FastAPI
 │   ├── test_data.py            <- Tests d'intégrité des jeux de données
@@ -63,42 +62,43 @@ Churn Prediction/
 
 ---
 
-## 🚀 Guide de Démarrage Rapide
+## Démarrage rapide
 
-### Option A : Exécution en Local avec Python Virtual Environment
+### Option A : exécution locale dans un environnement virtuel
 
-1. **Cloner le projet et créer un environnement virtuel :**
+1. **Créer et activer un environnement virtuel :**
    ```bash
    python -m venv .venv
-   .\.venv\Scripts\activate   # Sur Windows
+   .\.venv\Scriptsctivate     # Windows
+   source .venv/bin/activate    # Linux / macOS
    ```
 
-2. **Installer les dépendances requises :**
+2. **Installer les dépendances :**
    ```bash
    pip install -r requirements.txt
    ```
 
-3. **Entraîner et générer l'artefact du pipeline ML :**
+3. **Entraîner le pipeline et sérialiser le modèle :**
    ```bash
    python "Churn Prediction/modeling/train_pipeline.py"
    ```
 
-4. **Lancer le serveur API FastAPI (Port 8000) :**
+4. **Lancer l'API FastAPI (port 8000) :**
    ```bash
    uvicorn api.main:app --reload --port 8000
    ```
-   - Swagger OpenAPI UI : [http://127.0.0.1:8000/docs](http://127.0.0.1:8000/docs)
-   - ReDoc UI : [http://127.0.0.1:8000/redoc](http://127.0.0.1:8000/redoc)
+   - Documentation Swagger : [http://127.0.0.1:8000/docs](http://127.0.0.1:8000/docs)
+   - Documentation ReDoc : [http://127.0.0.1:8000/redoc](http://127.0.0.1:8000/redoc)
 
-5. **Lancer l'interface Streamlit (Port 8501) :**
+5. **Lancer l'interface Streamlit (port 8501) :**
    ```bash
    streamlit run streamlit_app/app.py
    ```
-   - Interface Web : [http://127.0.0.1:8501](http://127.0.0.1:8501)
+   - Interface web : [http://127.0.0.1:8501](http://127.0.0.1:8501)
 
 ---
 
-### Option B : Déploiement Conteneurisé avec Docker Compose
+### Option B : Docker Compose
 
 Lancer les deux services (`API` + `Streamlit`) en une seule commande :
 
@@ -106,12 +106,12 @@ Lancer les deux services (`API` + `Streamlit`) en une seule commande :
 docker compose up --build
 ```
 
-- **Service API FastAPI :** `http://localhost:8000/docs`
-- **Dashboard Streamlit :** `http://localhost:8501`
+- **API FastAPI :** `http://localhost:8000/docs`
+- **Tableau de bord Streamlit :** `http://localhost:8501`
 
 ---
 
-## CI/CD GitHub Actions
+## CI/CD (GitHub Actions)
 
 Les workflows `.github/workflows/ci.yaml`, `.github/workflows/cd.yaml` et `.github/workflows/cml.yaml` séparent respectivement la validation du code, la publication Docker et l'entraînement ML. La CI exécute les tests et les contrôles Ruff sur chaque pull request et chaque push. Après un push sur `main` ou `master`, la CD construit puis publie les deux images Docker sur Docker Hub :
 
@@ -121,7 +121,7 @@ Les workflows `.github/workflows/ci.yaml`, `.github/workflows/cd.yaml` et `.gith
 Dans les secrets du dépôt GitHub (`Settings > Secrets and variables > Actions`), ajouter :
 
 - `DOCKERHUB_USERNAME` : nom d'utilisateur Docker Hub.
-- `DOCKERHUB_TOKEN` : access token Docker Hub avec les droits de lecture et d'écriture sur les dépôts.
+- `DOCKERHUB_TOKEN` : jeton d'accès Docker Hub avec les droits de lecture et d'écriture sur les dépôts.
 
 Les images sont publiées avec le tag `latest` et un tag correspondant au SHA du commit.
 
@@ -135,7 +135,7 @@ Le répertoire `data/` étant ignoré par Git, configurez DVC ou un stockage ext
 
 ---
 
-## 🧪 Exécution des Tests Automatisés
+## Tests
 
 Lancer la suite de tests avec `pytest` :
 
@@ -143,15 +143,15 @@ Lancer la suite de tests avec `pytest` :
 pytest -v
 ```
 
-Tous les 9 tests unitaires et d'intégration valident :
+Les 9 tests unitaires et d'intégration couvrent :
 - L'intégrité des jeux de données nettoyés.
 - L'inférence et la cohérence des probabilités du modèle ML.
-- La réponse conforme des endpoints `/health`, `/predict` et `/predict_batch`.
-- Le rejet et la validation stricte Pydantic des entrées invalides (HTTP 422).
+- Les réponses des endpoints `/health`, `/predict` et `/predict_batch`.
+- Le rejet des entrées invalides par la validation Pydantic (HTTP 422).
 
 ---
 
-## 🔌 API Endpoints Reference
+## Référence de l'API
 
 ### `GET /health`
 Vérifie l'état du service et du modèle.
@@ -167,7 +167,7 @@ Vérifie l'état du service et du modèle.
 ### `POST /predict`
 Évalue un client individuel.
 ```json
-// Payload d'entrée
+// Corps de la requête
 {
   "CreditScore": 650,
   "Geography": "France",
@@ -184,6 +184,6 @@ Vérifie l'état du service et du modèle.
 
 ---
 
-## 👨‍💻 Auteur & Licence
+## Auteur
 
-Projet développé dans le cadre de la mise en production MLOps pour la prédiction de churn bancaire.
+Loscope29 — projet de portfolio data science, de l'analyse exploratoire à la mise en production d'un modèle de prédiction du churn bancaire.

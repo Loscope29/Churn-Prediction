@@ -1,4 +1,4 @@
-# 📊 Rapport Décisionnel - Stratégie de Rétention & Prédiction du Churn Client
+# Rapport Décisionnel - Stratégie de Rétention & Prédiction du Churn Client
 
 **À l'attention de :** Direction Générale, Direction Marketing & Responsables Relation Client  
 **Auteur :** Équipe MLOps & Data Science  
